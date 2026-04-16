@@ -1,0 +1,42 @@
+---
+- name: Install moonraker
+  hosts: rpi
+  tasks:
+    - name: Fetch moonraker git repository
+      git:
+        repo: https://github.com/Arksine/moonraker
+        dest: /home/pi/moonraker
+
+    - name: Create moonraker python venv
+      pip:
+        requirements: /home/pi/moonraker/scripts/moonraker-requirements.txt
+        virtualenv: /home/pi/moonraker-env
+        virtualenv_command: python3 -m venv
+
+    - name: Copy moonraker config for printer
+      template:
+        src: templates/moonraker.conf.j2
+        dest: "/home/pi/printer_data_{{ item.name }}/config/moonraker.conf"
+      loop: "{{ printers }}"
+
+    - name: Copy moonraker systemd service template
+      become: yes
+      template:
+        src: templates/moonraker@.service.j2
+        dest: /etc/systemd/system/moonraker@.service
+        mode: '0644'
+      notify: reload systemd
+
+    - name: Apply moonraker polkit rules
+      become: yes
+      command: /home/pi/moonraker/scripts/set-policykit-rules.sh
+      args:
+        creates: /etc/polkit-1/rules.d/moonraker.rules
+
+    - name: Activate and start moonraker service for printer
+      become: yes
+      systemd:
+        name: "moonraker@{{ item.name }}"
+        enabled: yes
+        state: started
+      loop: "{{ printers }}"

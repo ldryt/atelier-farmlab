@@ -1,0 +1,24 @@
+all:
+  hosts:
+    rpi:
+      ansible_host: TODO
+      ansible_user: pi
+      printers:
+        - name: sidewinder_1
+          vendor_id: TODO
+          product_id: TODO
+          serial_number: TODO
+          moonraker:
+            port: 7125
+        - name: sidewinder_2
+          vendor_id: TODO
+          product_id: TODO
+          serial_number: TODO
+          moonraker:
+            port: 7126
+        - name: kobra_3
+          vendor_id: TODO
+          product_id: TODO
+          serial_number: TODO
+          moonraker:
+            port: 7127

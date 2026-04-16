@@ -1,0 +1,1 @@
+SUBSYSTEM=="tty", ATTRS{idVendor}=="{{ item.vendor_id }}", ATTRS{idProduct}=="{{ item.product_id }}", ATTRS{serial}=="{{ item.serial_number }}", SYMLINK+="{{ item.name }}"

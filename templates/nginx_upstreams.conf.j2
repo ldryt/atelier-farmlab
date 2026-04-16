@@ -1,0 +1,6 @@
+# /etc/nginx/conf.d/upstreams.conf
+
+upstream apiserver {
+    ip_hash;
+    server 127.0.0.1:{{ printers[0].moonraker.port }};
+}

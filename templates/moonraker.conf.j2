@@ -1,0 +1,25 @@
+[server]
+host: 0.0.0.0
+port: {{ item.moonraker.port }}
+klippy_uds_address: /home/pi/printer_data_{{ item.name }}/comms/klippy.sock
+
+[file_manager]
+enable_object_processing: True
+enable_config_write_access: False
+
+[authorization]
+cors_domains:
+    http://{{ hostname }}.local
+trusted_clients:
+    10.0.0.0/8
+    127.0.0.0/8
+    169.254.0.0/16
+    172.16.0.0/12
+    192.168.0.0/16
+    FE80::/10
+    ::1/128
+
+[history]
+
+[machine]
+provider: systemd_cli

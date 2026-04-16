@@ -1,0 +1,57 @@
+---
+- name: Install klipper
+  hosts: rpi
+  tasks:
+    - name: Fetch klipper git repository
+      git:
+        repo: https://github.com/Klipper3d/klipper
+        dest: /home/pi/klipper
+        version: v0.13.0
+
+    - name: Create klipper python venv
+      pip:
+        requirements: /home/pi/klipper/scripts/klippy-requirements.txt
+        virtualenv: /home/pi/klippy-env
+        virtualenv_command: python3 -m venv
+
+    - name: Create directory for printer
+      file:
+        path: "/home/pi/printer_data_{{ item.0.name }}/{{ item.1 }}"
+        state: directory
+        mode: 0755
+      loop: "{{ printers | product(['config', 'logs', 'comms', 'gcodes']) | list }}"
+
+    - name: Create udev rules for printer
+      become: yes
+      template:
+        src: udev-printer.rules.j2
+        dest: "/etc/udev/rules.d/99-printer-{{ item.name }}.rules"
+      loop: "{{ printers }}"
+      notify: reload udev
+
+    - name: Copy systemd klipper service template
+      become: yes
+      template:
+        src: templates/klipper@.service.j2
+        dest: /etc/systemd/system/klipper@.service
+        mode: 0644
+      notify: reload systemd
+
+    - name: Enable and start klipper service for printer
+      become: yes
+      systemd:
+        name: "klipper@{{ item.name }}"
+        enabled: yes
+        state: started
+      loop: "{{ printers }}"
+
+  handlers:
+    - name: reload udev
+      become: yes
+      command: udevadm control --reload-rules
+      listen: reload udev
+      notify: trigger udev
+
+    - name: trigger udev
+      become: yes
+      command: udevadm trigger
