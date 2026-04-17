@@ -27,12 +27,6 @@
         mode: '0644'
       notify: reload systemd
 
-    - name: Apply moonraker polkit rules
-      become: yes
-      command: /home/pi/moonraker/scripts/set-policykit-rules.sh
-      args:
-        creates: /etc/polkit-1/rules.d/moonraker.rules
-
     - name: Activate and start moonraker service for printer
       become: yes
       systemd:
@@ -41,7 +35,23 @@
         state: started
       loop: "{{ printers }}"
 
+    - name: Apply moonraker polkit rules
+      command: /home/pi/moonraker/scripts/set-policykit-rules.sh --disable-systemctl
+      args:
+        creates: /etc/polkit-1/rules.d/moonraker.rules
+      notify:
+        - reload systemd
+        - restart moonraker
+
+
   handlers:
     - name: reload systemd
+      become: yes
       systemd:
         daemon_reload: yes
+    - name: restart moonraker
+      become: yes
+      ansible.builtin.systemd:
+        name: "moonraker@{{ item.name }}"
+        state: restarted
+      loop: "{{ printers }}"
