@@ -9,7 +9,7 @@ enable_config_write_access: False
 
 [authorization]
 cors_domains:
-    http://{{ hostname }}.local
+    http://{{ inventory_hostname }}.local
 trusted_clients:
     10.0.0.0/8
     127.0.0.0/8

@@ -1,6 +1,6 @@
 ---
 - name: Install mainsail
-  hosts: rpi
+  hosts: farmlab
   tasks:
     - name: Create mainsail www folder
       become: yes

@@ -1,6 +1,6 @@
 ---
 - name: Install moonraker
-  hosts: rpi
+  hosts: farmlab
   tasks:
     - name: Fetch moonraker git repository
       git:

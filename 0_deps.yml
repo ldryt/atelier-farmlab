@@ -1,8 +1,12 @@
 ---
 - name: Install dependencies
-  hosts: rpi
+  hosts: farmlab
   become: yes
   tasks:
+    - name: Set the system hostname
+      become: yes
+      hostname:
+        name: "{{ inventory_hostname }}"
     - name: Ensure pi user is in dialout and tty groups
       become: yes
       user:

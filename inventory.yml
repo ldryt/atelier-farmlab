@@ -1,7 +1,7 @@
 all:
   hosts:
-    rpi:
-      ansible_host: TODO
+    farmlab:
+      ansible_host: klipper-farm.local
       ansible_user: pi
       printers:
         - name: sidewinder_1

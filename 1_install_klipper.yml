@@ -1,6 +1,6 @@
 ---
 - name: Install klipper
-  hosts: rpi
+  hosts: farmlab
   tasks:
     - name: Fetch klipper git repository
       git:
