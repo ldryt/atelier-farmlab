@@ -1,7 +1,10 @@
 [gcode_macro PRINT_START]
 gcode:
+    {% raw %}
     {% set BED_TEMP = params.BED|default(60)|float %}
     {% set EXTRUDER_TEMP = params.EXTRUDER|default(190)|float %}
+    {% endraw %}
+
     # Start bed heating (but don't wait for it)
     M140 S{BED_TEMP}
     # Use absolute coordinates
@@ -26,11 +29,14 @@ gcode:
     G91                           ; relative positioning
 
     #   Get Boundaries
+    {% raw %}
     {% set max_x = printer.configfile.config["stepper_x"]["position_max"]|float %}
     {% set max_y = printer.configfile.config["stepper_y"]["position_max"]|float %}
     {% set max_z = printer.configfile.config["stepper_z"]["position_max"]|float %}
+    {% endraw %}
 
     #   Check end position to determine safe direction to move
+    {% raw %}
     {% if printer.toolhead.position.x < (max_x - 20) %}
         {% set x_safe = 20.0 %}
     {% else %}
@@ -48,6 +54,7 @@ gcode:
     {% else %}
         {% set z_safe = max_z - printer.toolhead.position.z %}
     {% endif %}
+    {% endraw %}
 
     G0 Z{z_safe} F3600            ; move nozzle up
     G0 X{x_safe} Y{y_safe} F20000 ; move nozzle to remove stringing
