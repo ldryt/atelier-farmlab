@@ -6,6 +6,7 @@
       git:
         repo: https://github.com/Arksine/moonraker
         dest: /home/pi/moonraker
+        version: 1ed102edfb34906115bfeb02712d4c839b93a7a9
 
     - name: Create moonraker python venv
       pip:

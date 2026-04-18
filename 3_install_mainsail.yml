@@ -12,7 +12,7 @@
 
     - name: Fetch mainsail git repository
       unarchive:
-        src: https://github.com/mainsail-crew/mainsail/releases/latest/download/mainsail.zip
+        src: https://github.com/mainsail-crew/mainsail/releases/download/v2.17.0/mainsail.zip
         dest: /var/www/mainsail
         remote_src: yes
 
