@@ -26,18 +26,21 @@
         src: templates/klipper/macros.cfg.j2
         dest: "/home/pi/printer_data_{{ item.name }}/config/macros.cfg"
       loop: "{{ printers }}"
+      notify: restart klipper
 
     - name: Copy mainsail.cfg for printer
       template:
         src: templates/klipper/mainsail.cfg.j2
         dest: "/home/pi/printer_data_{{ item.name }}/config/mainsail.cfg"
       loop: "{{ printers }}"
+      notify: restart klipper
 
     - name: Copy printer.cfg for printer
       template:
         src: "templates/klipper/{{ item.model }}.cfg.j2"
         dest: "/home/pi/printer_data_{{ item.name }}/config/printer.cfg"
       loop: "{{ printers }}"
+      notify: restart klipper
 
     - name: Create udev rules for printer
       become: yes
@@ -73,3 +76,15 @@
     - name: trigger udev
       become: yes
       command: udevadm trigger
+
+    - name: reload systemd
+      become: yes
+      systemd:
+        daemon_reload: yes
+
+    - name: restart klipper
+      become: yes
+      systemd:
+        name: "klipper@{{ item.name }}"
+        state: restarted
+      loop: "{{ printers }}"

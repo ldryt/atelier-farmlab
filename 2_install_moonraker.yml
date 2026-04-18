@@ -50,9 +50,10 @@
       become: yes
       systemd:
         daemon_reload: yes
+
     - name: restart moonraker
       become: yes
-      ansible.builtin.systemd:
+      systemd:
         name: "moonraker@{{ item.name }}"
         state: restarted
       loop: "{{ printers }}"
