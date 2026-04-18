@@ -21,6 +21,24 @@
         mode: 0755
       loop: "{{ printers | product(['config', 'logs', 'comms', 'gcodes']) | list }}"
 
+    - name: Copy macros.cfg for printer
+      template:
+        src: templates/klipper/macros.cfg.j2
+        dest: "/home/pi/printer_data_{{ item.name }}/config/macros.cfg"
+      loop: "{{ printers }}"
+
+    - name: Copy mainsail.cfg for printer
+      template:
+        src: templates/klipper/mainsail.cfg.j2
+        dest: "/home/pi/printer_data_{{ item.name }}/config/mainsail.cfg"
+      loop: "{{ printers }}"
+
+    - name: Copy printer.cfg for printer
+      template:
+        src: "templates/klipper/{{ item.model }}.cfg.j2"
+        dest: "/home/pi/printer_data_{{ item.name }}/config/printer.cfg"
+      loop: "{{ printers }}"
+
     - name: Create udev rules for printer
       become: yes
       template:
