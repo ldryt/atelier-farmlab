@@ -15,6 +15,7 @@
         src: https://github.com/mainsail-crew/mainsail/releases/download/v2.17.0/mainsail.zip
         dest: /var/www/mainsail
         remote_src: yes
+        creates: /var/www/mainsail/index.html
 
     - name: Copy nginx common vars for mainsail
       become: yes
