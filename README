@@ -1,11 +1,27 @@
-# How to dump existing SWX1 firmware
+# Using Ansible
+## SSH config
+Make sure you can ssh to the pi
+```
+Host farmlab
+    HostName farmlab.local
+    User pi
+    IdentityFile "~/.ssh/pi@makerprint.pem"
+```
+
+## How to run all playbooks
+```bash
+ansible-playbook -i inventory.yml ?_*.yml
+```
+
+# Flashing firmware
+## How to dump existing SWX1 firmware
 Hold the reset button, and release it right after starting this command:
 ```bash
 avrdude -patmega2560 -cwiring -P /dev/ttyUSB0 -F -Uflash:r:dump.hex:i
 ```
 (You can find the stock firmware in `docs/firmware/sidewinder_x1/original.hex`)
 
-# How to flash klipper firmware on SWX1
+## How to flash klipper firmware on SWX1
 ```bash
 cd /home/pi/klipper
 make menuconfig
