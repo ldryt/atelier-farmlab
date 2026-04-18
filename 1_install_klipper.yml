@@ -27,6 +27,7 @@
         dest: "/home/pi/printer_data_{{ item.name }}/config/macros.cfg"
       loop: "{{ printers }}"
       notify: restart klipper
+      register: klipper_config
 
     - name: Copy mainsail.cfg for printer
       template:
@@ -34,6 +35,7 @@
         dest: "/home/pi/printer_data_{{ item.name }}/config/mainsail.cfg"
       loop: "{{ printers }}"
       notify: restart klipper
+      register: klipper_config
 
     - name: Copy printer.cfg for printer
       template:
@@ -41,6 +43,7 @@
         dest: "/home/pi/printer_data_{{ item.name }}/config/printer.cfg"
       loop: "{{ printers }}"
       notify: restart klipper
+      register: klipper_config
 
     - name: Create udev rules for printer
       become: yes
@@ -85,6 +88,7 @@
     - name: restart klipper
       become: yes
       systemd:
-        name: "klipper@{{ item.name }}"
+        name: "klipper@{{ item.item.name }}"
         state: restarted
-      loop: "{{ printers }}"
+      loop: "{{ klipper_config.results }}"
+      when: item.changed
