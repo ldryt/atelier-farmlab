@@ -2,12 +2,12 @@
 system_user: pi
 install_dir: "/home/{{ system_user }}"
 
-klipper_repo: "{{ klipper_repo }}"
-klipper_version: "{{ klipper_version }}"
+klipper_repo: "https://github.com/Klipper3d/klipper"
+klipper_version: "v0.13.0"
 
-moonraker_repo: "{{ moonraker_repo }}"
-moonraker_version: "{{ moonraker_version }}"
+moonraker_repo: "https://github.com/Arksine/moonraker"
+moonraker_version: "1ed102edfb34906115bfeb02712d4c839b93a7a9"
 
-mainsail_version: "{{ mainsail_version }}"
+mainsail_version: "v2.17.0"
 mainsail_url: "https://github.com/mainsail-crew/mainsail/releases/download/{{ mainsail_version }}/mainsail.zip"
-mainsail_www_dir: "{{ mainsail_www_dir }}"
+mainsail_www_dir: "/var/www/mainsail"
