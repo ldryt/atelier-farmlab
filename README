@@ -1,1 +1,14 @@
-https://docs.mainsail.xyz/setup/manual/
+# How to dump existing SWX1 firmware
+Hold the reset button, and release it right after starting this command:
+```bash
+avrdude -patmega2560 -cwiring -P /dev/ttyUSB0 -F -Uflash:r:dump.hex:i
+```
+(You can find the stock firmware in `docs/firmware/sidewinder_x1/original.hex`)
+
+# How to flash klipper firmware on SWX1
+```bash
+cd /home/pi/klipper
+make menuconfig
+make
+avrdude -cwiring -patmega2560 -P/dev/ttyUSB0 -D -Uflash:w:out/klipper.elf.hex:i
+```
