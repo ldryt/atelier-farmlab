@@ -1,0 +1,47 @@
+- name: Set the system hostname
+  become: true
+  hostname:
+    name: "{{ inventory_hostname }}"
+- name: Ensure {{ system_user }} user is in dialout and tty groups
+  become: true
+  user:
+    name: "{{ system_user }}"
+    groups: dialout,tty
+    append: yes
+- name: Install dependencies
+  become: true
+  apt:
+    pkg:
+      - git
+      - unzip
+      - python3-virtualenv
+      - python3-dev
+      - libffi-dev
+      - build-essential
+      - libncurses-dev
+      - avrdude
+      - gcc-avr
+      - binutils-avr
+      - avr-libc
+      - stm32flash
+      - dfu-util
+      - libnewlib-arm-none-eabi
+      - gcc-arm-none-eabi
+      - binutils-arm-none-eabi
+      - libusb-dev
+      - libusb-1.0-0
+      - libusb-1.0-0-dev
+      - pkg-config
+      - python3-virtualenv
+      - python3-dev
+      - libopenjp2-7
+      - libsodium-dev
+      - zlib1g-dev
+      - libjpeg-dev
+      - packagekit
+      - wireless-tools
+      - curl
+      - build-essential
+      - nginx
+    state: present
+    update_cache: yes

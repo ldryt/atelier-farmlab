@@ -1,0 +1,8 @@
+---
+- name: Setup farmlab
+  hosts: farmlab
+  roles:
+    - common
+    - klipper
+    - moonraker
+    - mainsail

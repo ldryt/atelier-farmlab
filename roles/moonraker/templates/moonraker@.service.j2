@@ -8,10 +8,10 @@ WantedBy=multi-user.target
 
 [Service]
 Type=simple
-User=pi
+User={{ system_user }}
 SupplementaryGroups=moonraker-admin
-WorkingDirectory=/home/pi/moonraker
+WorkingDirectory={{ install_dir }}/moonraker
 
-ExecStart=/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/moonraker.py -d /home/pi/printer_data_%i
+ExecStart={{ install_dir }}/moonraker-env/bin/python {{ install_dir }}/moonraker/moonraker/moonraker.py -d {{ install_dir }}/printer_data_%i
 Restart=always
 RestartSec=10

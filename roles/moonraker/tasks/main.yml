@@ -1,0 +1,43 @@
+---
+- name: Fetch moonraker git repository
+  git:
+    repo: "{{ moonraker_repo }}"
+    dest: "{{ install_dir }}/moonraker"
+    version: "{{ moonraker_version }}"
+
+- name: Create moonraker python venv
+  pip:
+    requirements: "{{ install_dir }}/moonraker/scripts/moonraker-requirements.txt"
+    virtualenv: "{{ install_dir }}/moonraker-env"
+    virtualenv_command: python3 -m venv
+
+- name: Copy moonraker config for printer
+  template:
+    src: moonraker.conf.j2
+    dest: "{{ install_dir }}/printer_data_{{ item.name }}/config/moonraker.conf"
+  loop: "{{ printers }}"
+  notify: restart moonraker
+
+- name: Copy moonraker systemd service template
+  become: true
+  template:
+    src: moonraker@.service.j2
+    dest: /etc/systemd/system/moonraker@.service
+    mode: '0644'
+  notify: reload systemd
+
+- name: Activate and start moonraker service for printer
+  become: true
+  systemd:
+    name: "moonraker@{{ item.name }}"
+    enabled: yes
+    state: started
+  loop: "{{ printers }}"
+
+- name: Apply moonraker polkit rules
+  command: "{{ install_dir }}/moonraker/scripts/set-policykit-rules.sh --disable-systemctl"
+  args:
+    creates: /etc/polkit-1/rules.d/moonraker.rules
+  notify:
+    - reload systemd
+    - restart moonraker

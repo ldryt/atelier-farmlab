@@ -1,0 +1,13 @@
+---
+system_user: pi
+install_dir: "/home/{{ system_user }}"
+
+klipper_repo: "{{ klipper_repo }}"
+klipper_version: "{{ klipper_version }}"
+
+moonraker_repo: "{{ moonraker_repo }}"
+moonraker_version: "{{ moonraker_version }}"
+
+mainsail_version: "{{ mainsail_version }}"
+mainsail_url: "https://github.com/mainsail-crew/mainsail/releases/download/{{ mainsail_version }}/mainsail.zip"
+mainsail_www_dir: "{{ mainsail_www_dir }}"

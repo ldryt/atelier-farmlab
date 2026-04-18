@@ -1,0 +1,25 @@
+[Unit]
+Description=Klipper 3D Printer Firmware %i
+Documentation=https://www.klipper3d.org/
+After=network-online.target
+Wants=udev.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=simple
+User={{ system_user }}
+WorkingDirectory={{ install_dir }}/klipper
+UMask=0002
+
+ExecStart={{ install_dir }}/klippy-env/bin/python {{ install_dir }}/klipper/klippy/klippy.py {{ install_dir }}/printer_data_%i/config/printer.cfg -l {{ install_dir }}/printer_data_%i/logs/klippy.log -I {{ install_dir }}/printer_data_%i/comms/klippy.serial -a {{ install_dir }}/printer_data_%i/comms/klippy.sock
+
+Restart=always
+RestartSec=10
+
+OOMScoreAdjust=-999
+CPUSchedulingPolicy=rr
+CPUSchedulingPriority=99
+IOSchedulingClass=realtime
+IOSchedulingPriority=0

@@ -1,0 +1,22 @@
+---
+- name: reload udev
+  become: true
+  command: udevadm control --reload-rules
+  listen: reload udev
+  notify: trigger udev
+
+- name: trigger udev
+  become: true
+  command: udevadm trigger
+
+- name: reload systemd
+  become: true
+  systemd:
+    daemon_reload: yes
+
+- name: restart klipper
+  become: true
+  systemd:
+    name: "klipper@{{ item.name }}"
+    state: restarted
+  loop: "{{ printers }}"

@@ -1,0 +1,47 @@
+---
+- name: Create mainsail www folder
+  become: true
+  file:
+    path: "{{ mainsail_www_dir }}"
+    state: directory
+    owner: "{{ system_user }}"
+    group: www-data
+
+- name: Fetch mainsail git repository
+  unarchive:
+    src: "{{ mainsail_url }}"
+    dest: "{{ mainsail_www_dir }}"
+    remote_src: yes
+    creates: "{{ mainsail_www_dir }}/index.html"
+
+- name: Copy nginx common vars for mainsail
+  become: true
+  template:
+    src: nginx_common_vars.conf.j2
+    dest: /etc/nginx/conf.d/common_vars.conf
+
+- name: Copy nginx upstreams for mainsail
+  become: true
+  template:
+    src: nginx_upstreams.conf.j2
+    dest: /etc/nginx/conf.d/upstreams.conf
+
+- name: Copy nginx config for mainsail
+  become: true
+  template:
+    src: nginx_mainsail.conf.j2
+    dest: /etc/nginx/sites-available/mainsail
+
+- name: Remove nginx default site
+  become: true
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Link mainsail nginx config to enable sites
+  become: true
+  file:
+    src: /etc/nginx/sites-available/mainsail
+    dest: /etc/nginx/sites-enabled/mainsail
+    state: link
+  notify: restart nginx
