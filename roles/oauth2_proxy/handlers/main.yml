@@ -1,0 +1,6 @@
+---
+- name: restart oauth2-proxy
+  become: true
+  systemd:
+    name: oauth2-proxy
+    state: restarted

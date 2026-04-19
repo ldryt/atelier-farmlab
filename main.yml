@@ -13,3 +13,5 @@
 
     - role: mainsail
       tags: ['mainsail']
+    - role: oauth2_proxy
+      tags: ['oauth2_proxy']

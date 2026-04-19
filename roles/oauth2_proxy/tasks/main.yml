@@ -1,0 +1,47 @@
+---
+- name: Extract OAuth2 Proxy release {{ oauth2_proxy_version }} {{ oauth2_proxy_arch }}
+  become: true
+  unarchive:
+    src: "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/{{ oauth2_proxy_version }}/oauth2-proxy-{{ oauth2_proxy_version }}.linux-{{ oauth2_proxy_arch }}.tar.gz"
+    dest: "/usr/local/bin/"
+    remote_src: yes
+    extra_opts:
+      - "--strip-components=1"
+      - "oauth2-proxy-{{ oauth2_proxy_version }}.linux-{{ oauth2_proxy_arch }}/oauth2-proxy"
+  notify: restart oauth2-proxy
+
+- name: Ensure OAuth2 Proxy is executable
+  become: true
+  file:
+    path: /usr/local/bin/oauth2-proxy
+    mode: 0755
+
+- name: Create configuration directory
+  become: true
+  file:
+    path: /etc/oauth2-proxy
+    state: directory
+    mode: 0755
+
+- name: Copy OAuth2 Proxy configuration
+  become: true
+  template:
+    src: oauth2-proxy.cfg.j2
+    dest: /etc/oauth2-proxy/oauth2-proxy.cfg
+    mode: 0600
+  notify: restart oauth2-proxy
+
+- name: Copy OAuth2 Proxy systemd service
+  become: true
+  template:
+    src: oauth2-proxy.service.j2
+    dest: /etc/systemd/system/oauth2-proxy.service
+  notify: restart oauth2-proxy
+
+- name: Enable and start OAuth2 Proxy
+  become: true
+  systemd:
+    name: oauth2-proxy
+    enabled: yes
+    state: started
+    daemon_reload: yes

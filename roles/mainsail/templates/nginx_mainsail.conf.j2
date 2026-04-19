@@ -1,9 +1,7 @@
-# /etc/nginx/sites-available/mainsail
-
 server {
     listen 80 default_server;
 
-    access_log /var/log/nginx/mainsail-access.log;
+    access_log /var/log/nginx/mainsail-access.log sso_audit;
     error_log /var/log/nginx/mainsail-error.log;
 
     gzip on;
@@ -21,6 +19,44 @@ server {
 
     client_max_body_size 0;
     proxy_request_buffering off;
+
+    # ==========================================
+    # Authentication
+{% for subnet in local_bypass_subnets %}
+    allow {{ subnet }};
+{% endfor %}
+    deny all;
+
+    auth_request /oauth2/auth;
+    satisfy any;
+
+    error_page 401 = /oauth2/sign_in;
+
+    location = /oauth2/auth {
+        internal;
+        proxy_pass http://127.0.0.1:4180;
+        proxy_set_header Host $host;
+        proxy_pass_request_body off;
+        proxy_set_header Content-Length "";
+    }
+
+    # Map Forge ID test callback to oauth2-proxy callback
+    location = /login/oauth2/code/epita {
+        proxy_pass http://127.0.0.1:4180/oauth2/callback;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /oauth2/ {
+        proxy_pass http://127.0.0.1:4180;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    # ==========================================
 
     location / {
         try_files $uri $uri/ /index.html;
@@ -41,7 +77,9 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Scheme $scheme;
         proxy_read_timeout 86400;
-    }
 
-{% endfor %}
+        auth_request_set $auth_user $upstream_http_x_auth_request_preferred_username;
+        proxy_set_header X-Remote-User $auth_user;
+    }
+    {% endfor %}
 }

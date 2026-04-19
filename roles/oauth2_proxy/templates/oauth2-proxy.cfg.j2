@@ -1,0 +1,15 @@
+provider = "oidc"
+client_id = "{{ oauth2_proxy_client_id }}"
+client_secret = "{{ oauth2_proxy_client_secret }}"
+oidc_issuer_url = "{{ oauth2_proxy_oidc_issuer_url }}"
+cookie_secret = "{{ oauth2_proxy_cookie_secret }}"
+cookie_secure = true
+
+scope = "openid email profile"
+email_domains = [ "*" ]
+
+set_xauthrequest = true
+
+http_address = "127.0.0.1:4180"
+upstreams = [ "http://127.0.0.1:80/" ]
+redirect_url = "{{ oauth2_proxy_redirect_url }}"

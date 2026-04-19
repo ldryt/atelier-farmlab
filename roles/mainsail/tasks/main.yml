@@ -25,24 +25,35 @@
   template:
     src: nginx_common_vars.conf.j2
     dest: /etc/nginx/conf.d/common_vars.conf
+  notify: restart nginx
 
 - name: Copy nginx upstreams for mainsail
   become: true
   template:
     src: nginx_upstreams.conf.j2
     dest: /etc/nginx/conf.d/upstreams.conf
+  notify: restart nginx
+
+- name: Copy Nginx SSO custom log format
+  become: true
+  template:
+    src: nginx_sso_log.conf.j2
+    dest: /etc/nginx/conf.d/sso_log.conf
+  notify: restart nginx
 
 - name: Copy nginx config for mainsail
   become: true
   template:
     src: nginx_mainsail.conf.j2
     dest: /etc/nginx/sites-available/mainsail
+  notify: restart nginx
 
 - name: Remove nginx default site
   become: true
   file:
     path: /etc/nginx/sites-enabled/default
     state: absent
+  notify: restart nginx
 
 - name: Link mainsail nginx config to enable sites
   become: true

@@ -11,3 +11,18 @@ moonraker_version: "1ed102edfb34906115bfeb02712d4c839b93a7a9"
 mainsail_version: "v2.17.0"
 mainsail_url: "https://github.com/mainsail-crew/mainsail/releases/download/{{ mainsail_version }}/mainsail.zip"
 mainsail_www_dir: "/var/www/mainsail"
+
+oauth2_proxy_version: "v7.6.0"
+oauth2_proxy_arch: "arm64" 
+
+# Forge ID Public test client
+oauth2_proxy_oidc_issuer_url: "https://cri.epita.fr"
+oauth2_proxy_client_id: "125070" # TODO: secret
+oauth2_proxy_client_secret: "f6ff8d394e6185d41834b19210979b897852680cf34700ae4ecb24ea" # TODO: secret
+oauth2_proxy_cookie_secret: "8d686d6d688d6d6886d86dt" # TODO: secret
+oauth2_proxy_redirect_url: "https://{{ inventory_hostname }}.local/oauth2/callback"
+
+local_bypass_subnets:
+  - "192.168.0.0/16"
+  - "10.0.0.0/8"
+  - "127.0.0.1/32"
