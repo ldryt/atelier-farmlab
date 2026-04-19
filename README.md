@@ -1,13 +1,9 @@
 # FarmLAB
 
-This repository contains all the configuration you need to manage the farm
+This repository contains all the configurations you need to manage the farm.
 
 ## Using Ansible
-### Prerequisites
-1. You must have [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) installed,
-2. You need the SSH key to access the print server
-
-#### SSH config
+### SSH config
 This Ansible configuration make use of the ssh config file to connect to the pi.
 Make sure this block is present in your `~/.ssh/config`
 ```
@@ -26,6 +22,13 @@ ansible-playbook -i inventory.yml main.yml
 
 ---
 
+# Slicer configs
+## SuperSlicer
+### Artillery Sidewinder X1
+> You can find the config in `docs/superslicer/SWX1.ini`
+
+---
+
 # Flashing firmware
 ## Artillery Sidewinder X1
 ### How to dump existing SWX1 firmware
@@ -33,7 +36,7 @@ Hold the reset button, and release it right after starting this command:
 ```bash
 avrdude -patmega2560 -cwiring -P /dev/ttyUSB0 -F -Uflash:r:dump.hex:i
 ```
-(You can find the stock firmware in `docs/firmware/sidewinder_x1/original.hex`)
+> You can find the stock firmware in `docs/firmware/sidewinder_x1/original.hex`
 
 ### How to flash klipper firmware on SWX1
 ```bash
