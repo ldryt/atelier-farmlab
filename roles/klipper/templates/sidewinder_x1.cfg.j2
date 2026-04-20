@@ -1,13 +1,3 @@
-[include mainsail.cfg]
-[include macros.cfg]
-
-[gcode_macro _CLIENT_VARIABLE]
-# variable_runout_sensor: "filament_switch_sensor runout"
-gcode:
-
-[mcu]
-serial: /dev/{{ item.name }}
-
 # Config for stock Artiellry Sidewinder X1, with MKS GEN L v1.0
 # ATMega 2560 @ 16MHz
 # Based on : https://github.com/Clank50AE/Clanks-Klipper-Configs/blob/master/SideWinder%20X1%20Stock%20MBL.cfg
