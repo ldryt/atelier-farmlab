@@ -5,8 +5,8 @@
 
 [printer]
 kinematics: cartesian
-max_velocity: 200
-max_accel: 3000
+max_velocity: 500
+max_accel: 5000
 max_z_velocity: 50
 max_z_accel: 100
 square_corner_velocity: 5 
@@ -129,14 +129,47 @@ screw4_name: back right
 speed: 100.0
 screw_thread: CW-M5
 
+[led extruder_led]
+red_pin: ar5
+green_pin: ar4
+blue_pin: ar6
+initial_RED: 0.0
+initial_GREEN: 0.0
+initial_BLUE: 0.0
 
+[gcode_macro STATUS_PAUSED]
+gcode:
+    SET_LED LED=extruder_led RED=1.0 GREEN=0.5 BLUE=0.0
 
-#[filament_switch_sensor runout]
-#Move filament runout sensor from TFT to X+ endstop pin. Umcomment all but this line if you want to use this
-#pause_on_runout: False
-#runout_gcode: PAUSE
-#insert_gcode: RESUME
-#switch_pin: ar2
+[gcode_macro STATUS_PRINTING]
+gcode:
+    SET_LED LED=extruder_led RED=1.0 GREEN=1.0 BLUE=1.0
+
+[gcode_macro STATUS_CANCELLED]
+gcode:
+    SET_LED LED=extruder_led RED=1.0 GREEN=0.0 BLUE=0.0
+
+[gcode_macro STATUS_READY]
+gcode:
+    SET_LED LED=extruder_led RED=0.0 GREEN=1.0 BLUE=0.0
+
+[delayed_gcode set_ready_led]
+initial_duration: 1.0
+gcode:
+    STATUS_READY
+
+[filament_switch_sensor runout]
+pause_on_runout: False
+runout_gcode: PAUSE
+insert_gcode: RESUME
+switch_pin: ar2
+
+[gcode_macro _CLIENT_VARIABLE]
+variable_runout_sensor: "filament_switch_sensor runout"
+variable_user_pause_macro: "STATUS_PAUSED"
+variable_user_resume_macro: "STATUS_PRINTING"
+variable_user_cancel_macro: "STATUS_CANCELLED"
+gcode:
 
 # Arduino aliases for atmega2560/1280 (Arduino mega) boards
 [board_pins arduino-mega]
