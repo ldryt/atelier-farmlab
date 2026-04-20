@@ -62,7 +62,7 @@ step_pin: ar26
 dir_pin: ar28
 enable_pin: !ar24
 microsteps: 16
-rotation_distance: 7.245
+rotation_distance: 7
 nozzle_diameter: 0.400
 filament_diameter: 1.750
 heater_pin: ar10
@@ -73,10 +73,6 @@ min_temp: 5
 max_temp: 300
 max_extrude_only_distance: 500
 max_extrude_cross_section: 2.0
-control = pid
-pid_kp = 15.693
-pid_ki = 0.793
-pid_kd = 77.681
 
 [heater_bed]
 heater_pin: ar8
@@ -84,10 +80,6 @@ sensor_type: EPCOS 100K B57560G104F
 sensor_pin: analog14
 min_temp: 5
 max_temp: 150
-control = pid
-pid_kp = 52.805
-pid_ki = 0.305
-pid_kd = 2283.165
 
 [fan]
 pin: ar9

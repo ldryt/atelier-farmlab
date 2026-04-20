@@ -26,20 +26,35 @@
     dest: "{{ install_dir }}/printer_data_{{ item.name }}/config/{{ item.model }}.cfg"
   loop: "{{ printers }}"
   notify: restart klipper
-  tags: ['klipper_cfg_model']
+  tags: ['klipper_cfg_printer']
 
+- name: Copy name.cfg for printer
+  template:
+    src: "{{ item.name }}.cfg.j2"
+    dest: "{{ install_dir }}/printer_data_{{ item.name }}/config/{{ item.name }}.cfg"
+  loop: "{{ printers }}"
+  notify: restart klipper
+  tags: ['klipper_cfg_printer']
+
+# TODO: transfer old SAVE_CONFIG to the new printer.cfg
 - name: Create initial printer.cfg
   become: true
   copy:
     dest: "{{ install_dir }}/printer_data_{{ item.name }}/config/printer.cfg"
-    force: no # Avoid overwriting SAVE_CONFIG
     content: |
       [include mainsail.cfg]
       [include macros.cfg]
+
       [include {{ item.model }}.cfg]
+      [include {{ item.name }}.cfg]
 
       [mcu]
       serial: /dev/{{ item.name }}
 
-      # Here lies klipper's SAVE_CONFIG overwrites, it is recommended to remove it and place the config overwrites in {{ item.model }}.cfg in git
+      ##########################################
+      # WARNING
+      # Here lies klipper's SAVE_CONFIG
+      # You *NEED* to remove them and place the config overwrites in {{ item.model }}.cfg in git
+      # The next Ansible deployment **WILL DISCARD THOSE CHANGES**
+      ##########################################
   loop: "{{ printers }}"

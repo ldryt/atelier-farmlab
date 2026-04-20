@@ -21,7 +21,7 @@ ansible-playbook -i inventory.yml main.yml
 ```
 If you want to narrow down the scope of your tasks, you can use tags:
 ```bash
-ansible-playbook -i inventory.yml main.yml --tags klipper_cfg_model
+ansible-playbook -i inventory.yml main.yml --tags klipper_cfg
 ```
 
 ---
