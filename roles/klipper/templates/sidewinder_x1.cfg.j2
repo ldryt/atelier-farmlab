@@ -32,7 +32,6 @@ endstop_pin: ^!ar14
 position_endstop: 0
 position_max: 310
 homing_speed: 40
-homing_positive_dir: false
 
 [stepper_z]
 step_pin: ar46
@@ -44,8 +43,12 @@ endstop_pin: ^!ar18
 position_endstop: 0
 position_min: -3
 position_max: 400
-homing_speed: 30
-second_homing_speed: 1
+homing_speed: 20
+second_homing_speed: 2
+
+[safe_z_home]
+home_xy_position: 10,10
+z_hop: 5
 
 [stepper_z1]
 step_pin: ar36
