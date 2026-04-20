@@ -139,7 +139,7 @@ initial_BLUE: 0.0
 
 [gcode_macro STATUS_PAUSED]
 gcode:
-    SET_LED LED=extruder_led RED=1.0 GREEN=0.5 BLUE=0.0
+    SET_LED LED=extruder_led RED=1.0 GREEN=0.1 BLUE=0.0
 
 [gcode_macro STATUS_PRINTING]
 gcode:
@@ -161,7 +161,6 @@ gcode:
 [filament_switch_sensor runout]
 pause_on_runout: False
 runout_gcode: PAUSE
-insert_gcode: RESUME
 switch_pin: ar2
 
 [gcode_macro _CLIENT_VARIABLE]
