@@ -19,6 +19,10 @@ Whether you want to set up a fresh pi for farmlab, update its system, or change 
 ```bash
 ansible-playbook -i inventory.yml main.yml
 ```
+If you want to narrow down the scope of your tasks, you can use tags:
+```bash
+ansible-playbook -i inventory.yml main.yml --tags klipper_cfg_model
+```
 
 ---
 
@@ -43,5 +47,6 @@ avrdude -patmega2560 -cwiring -P /dev/ttyUSB0 -F -Uflash:r:dump.hex:i
 cd /home/pi/klipper
 make menuconfig
 make
+# Hold the reset button, and release it right after starting this command:
 avrdude -cwiring -patmega2560 -P/dev/ttyUSB0 -D -Uflash:w:out/klipper.elf.hex:i
 ```
