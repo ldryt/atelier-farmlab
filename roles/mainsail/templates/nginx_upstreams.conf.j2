@@ -1,9 +1,6 @@
 # /etc/nginx/conf.d/upstreams.conf
 
-{% for printer in printers %}
-upstream apiserver_{{ printer.name }} {
+upstream apiserver {
     ip_hash;
-    server 127.0.0.1:{{ printer.moonraker.port }};
+    server 127.0.0.1:{{ printers[0].moonraker.port }};
 }
-
-{% endfor %}
