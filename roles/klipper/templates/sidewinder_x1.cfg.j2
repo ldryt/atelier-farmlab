@@ -1,5 +1,6 @@
 # Config for stock Artiellry Sidewinder X1, with MKS GEN L v1.0
 # ATMega 2560 @ 16MHz
+# https://github.com/makerbase-mks/MKS-GEN_L/wiki/MKS_GEN_L_V1
 # Based on : https://github.com/Clank50AE/Clanks-Klipper-Configs/blob/master/SideWinder%20X1%20Stock%20MBL.cfg
 
 [printer]
@@ -70,9 +71,9 @@ max_temp: 300
 max_extrude_only_distance: 500
 max_extrude_cross_section: 2.0
 control = pid
-pid_kp = 19.605
-pid_ki = 0.983
-pid_kd = 97.782
+pid_kp = 15.693
+pid_ki = 0.793
+pid_kd = 77.681
 
 [heater_bed]
 heater_pin: ar8
@@ -81,9 +82,9 @@ sensor_pin: analog14
 min_temp: 5
 max_temp: 150
 control = pid
-pid_kp = 51.721
-pid_ki = 0.399
-pid_kd = 1675.755
+pid_kp = 52.805
+pid_ki = 0.305
+pid_kd = 2283.165
 
 [fan]
 pin: ar9
