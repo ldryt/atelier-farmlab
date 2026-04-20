@@ -1,0 +1,45 @@
+---
+- name: Create directory for printer
+  file:
+    path: "{{ install_dir }}/printer_data_{{ item.0.name }}/{{ item.1 }}"
+    state: directory
+    mode: 0755
+  loop: "{{ printers | product(['config', 'logs', 'comms', 'gcodes']) | list }}"
+
+- name: Copy macros.cfg for printer
+  template:
+    src: macros.cfg.j2
+    dest: "{{ install_dir }}/printer_data_{{ item.name }}/config/macros.cfg"
+  loop: "{{ printers }}"
+  notify: restart klipper
+
+- name: Copy mainsail.cfg for printer
+  template:
+    src: mainsail.cfg.j2
+    dest: "{{ install_dir }}/printer_data_{{ item.name }}/config/mainsail.cfg"
+  loop: "{{ printers }}"
+  notify: restart klipper
+
+- name: Copy model.cfg for printer
+  template:
+    src: "{{ item.model }}.cfg.j2"
+    dest: "{{ install_dir }}/printer_data_{{ item.name }}/config/{{ item.model }}.cfg"
+  loop: "{{ printers }}"
+  notify: restart klipper
+  tags: ['klipper_cfg_model']
+
+- name: Create initial printer.cfg
+  become: true
+  copy:
+    dest: "{{ install_dir }}/printer_data_{{ item.name }}/config/printer.cfg"
+    force: no # Avoid overwriting SAVE_CONFIG
+    content: |
+      [include mainsail.cfg]
+      [include macros.cfg]
+      [include {{ item.model }}.cfg]
+
+      [mcu]
+      serial: /dev/{{ item.name }}
+
+      # Here lies klipper's SAVE_CONFIG overwrites, it is recommended to remove it and place the config overwrites in {{ item.model }}.cfg in git
+  loop: "{{ printers }}"

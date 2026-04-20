@@ -2,7 +2,14 @@
 - name: Setup farmlab
   hosts: farmlab
   roles:
-    - common
-    - klipper
-    - moonraker
-    - mainsail
+    - role: common
+      tags: ['common']
+
+    - role: klipper
+      tags: ['klipper']
+
+    - role: moonraker
+      tags: ['moonraker']
+
+    - role: mainsail
+      tags: ['mainsail']
