@@ -36,9 +36,16 @@
   notify: restart klipper
   tags: ['klipper_cfg_printer']
 
-# TODO: transfer old SAVE_CONFIG to the new printer.cfg
-- name: Create initial printer.cfg
-  become: true
+- name: Extract SAVE_CONFIG block from printer.cfg
+  shell: |
+    F="{{ install_dir }}/printer_data_{{ item.name }}/config/printer.cfg"
+    [ -f "$F" ] && exit
+    awk '/#\*# <---------------------- SAVE_CONFIG ---------------------->/{flag=1} flag' "$F"
+  register: SC
+  loop: "{{ printers }}"
+  changed_when: false
+
+- name: Create printer.cfg
   copy:
     dest: "{{ install_dir }}/printer_data_{{ item.name }}/config/printer.cfg"
     content: |
@@ -54,7 +61,10 @@
       ##########################################
       # WARNING
       # Here lies klipper's SAVE_CONFIG
-      # You *NEED* to remove them and place the config overwrites in {{ item.model }}.cfg in git
-      # The next Ansible deployment **WILL DISCARD THOSE CHANGES**
+      # You *SHOULD* remove them and place the config overwrites in {{ item.model }}.cfg in git
       ##########################################
+      {{ SC.results[i].stdout }}
+  loop_control:
+    index_var: i
   loop: "{{ printers }}"
+  notify: restart klipper
