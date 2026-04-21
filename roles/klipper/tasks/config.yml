@@ -4,7 +4,29 @@
     path: "{{ install_dir }}/printer_data_{{ item.0.name }}/{{ item.1 }}"
     state: directory
     mode: 0755
-  loop: "{{ printers | product(['config', 'logs', 'comms', 'gcodes']) | list }}"
+  loop: "{{ printers | product(['config', 'logs', 'comms']) | list }}"
+
+- name: Create directory for gcodes
+  file:
+    path: "{{ install_dir }}/gcodes/{{ item.model }}"
+    state: directory
+    mode: 0755
+  loop: "{{ printers }}"
+
+- name: Ensure gcode path is not a directory
+  file:
+    path: "{{ install_dir }}/printer_data_{{ item.name }}/gcodes"
+    state: absent
+  loop: "{{ printers }}"
+
+# https://github.com/Arksine/moonraker/blob/1ed102edfb34906115bfeb02712d4c839b93a7a9/moonraker/components/file_manager/file_manager.py#L158
+- name: Symlink gcodes folder to moonraker expected path
+  file:
+    src: "{{ install_dir }}/gcodes/{{ item.model }}"
+    dest: "{{ install_dir }}/printer_data_{{ item.name }}/gcodes"
+    state: link
+    force: yes
+  loop: "{{ printers }}"
 
 - name: Copy macros.cfg for printer
   template:
@@ -38,7 +60,6 @@
 
 # TODO: transfer old SAVE_CONFIG to the new printer.cfg
 - name: Create initial printer.cfg
-  become: true
   copy:
     dest: "{{ install_dir }}/printer_data_{{ item.name }}/config/printer.cfg"
     content: |
