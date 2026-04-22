@@ -33,6 +33,28 @@ ansible-playbook -i inventory.yml main.yml --tags klipper_cfg
 
 ---
 
+# Calibrating a printer
+
+https://ellis3dp.com/Print-Tuning-Guide/articles/index_tuning.html
+
+## 1. [PID Calibration](https://www.klipper3d.org/Config_checks.html#calibrate-pid-settings)
+```gcode
+PID_CALIBRATE HEATER=extruder TARGET=200
+PID_CALIBRATE HEATER=heater_bed TARGET=60
+```
+
+## 2. [Bed leveling (manual)](https://www.klipper3d.org/Manual_Level.html)
+```gcode
+Z_ENDSTOP_CALIBRATE
+BED_SCREWS_ADJUST 
+```
+
+## 3. [Bed mesh (manual)](https://www.klipper3d.org/Bed_Mesh.html)
+First, make sure to pre-heat the bed
+In Mainsail, go to "Heightmap", then "Calibrate"
+
+---
+
 # Flashing firmware
 ## Artillery Sidewinder X1
 ### How to dump existing SWX1 firmware

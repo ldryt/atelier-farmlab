@@ -80,8 +80,14 @@ sensor_type: EPCOS 100K B57560G104F
 sensor_pin: analog14
 min_temp: 5
 max_temp: 150
-control: watermark
-max_delta: 0.75
+# https://github.com/Klipper3d/klipper/issues/4427
+# => Kp=Kp/3 ; Ki=Ki/3 ; Kd=Kd*0.88
+# Finally took pid settings from: https://github.com/Klipper3d/klipper/issues/4427#issuecomment-916063792
+control = pid
+pid_Kp=45.20
+pid_Ki=7.46
+pid_Kd=182.66
+smooth_time: 10
 
 [fan]
 pin: ar9
@@ -102,26 +108,15 @@ screw3: 255,255
 screw3_name: back right
 screw4: 55,255
 screw4_name: back left
-speed: 100.0
 
 [bed_mesh]
-mesh_min: 40,20
-mesh_max: 270,270
-probe_count: 5,5
+horizontal_move_z: 2
+mesh_min: 30, 30
+mesh_max: 270, 270
+probe_count: 3, 3
 fade_start: 1.0
 fade_end: 10.0
-
-[screws_tilt_adjust]
-screw1: 22,83
-screw1_name: front left
-screw2: 222,83
-screw2_name: front right
-screw3: 22,283
-screw3_name: back left
-screw4: 222,283
-screw4_name: back right
-speed: 100.0
-screw_thread: CW-M5
+algorithm: bicubic
 
 [led extruder_led]
 red_pin: ar5
