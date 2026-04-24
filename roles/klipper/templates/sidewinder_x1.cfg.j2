@@ -73,6 +73,7 @@ min_temp: 5
 max_temp: 300
 max_extrude_only_distance: 500
 max_extrude_cross_section: 2.0
+smooth_time: 3
 
 [heater_bed]
 heater_pin: ar8
@@ -82,7 +83,7 @@ min_temp: 5
 max_temp: 150
 # https://github.com/Klipper3d/klipper/issues/4427
 # => Kp=Kp/3 ; Ki=Ki/3 ; Kd=Kd*0.88
-# Finally took pid settings from: https://github.com/Klipper3d/klipper/issues/4427#issuecomment-916063792
+# Finally worked with pid settings from: https://github.com/Klipper3d/klipper/issues/4427#issuecomment-916063792
 control = pid
 pid_Kp=45.20
 pid_Ki=7.46
