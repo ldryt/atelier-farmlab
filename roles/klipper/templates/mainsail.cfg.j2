@@ -53,7 +53,7 @@
 #gcode:
 
 [virtual_sdcard]
-path: {{ install_dir }}/printer_data_{{ item.name }}/gcodes
+path: {{ install_dir }}/printer_data_{{ printer.name }}/gcodes
 on_error_gcode: CANCEL_PRINT
 
 [pause_resume]

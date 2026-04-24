@@ -1,61 +1,56 @@
----
-- name: Create directory for printer
-  file:
-    path: "{{ install_dir }}/printer_data_{{ item.0.name }}/{{ item.1 }}"
-    state: directory
-    mode: 0755
-  loop: "{{ printers | product(['config', 'logs', 'comms', 'gcodes']) | list }}"
-
-- name: Copy macros.cfg for printer
+- name: Copy macros.cfg for {{ printer.name }}
   template:
     src: macros.cfg.j2
-    dest: "{{ install_dir }}/printer_data_{{ item.name }}/config/macros.cfg"
-  loop: "{{ printers }}"
-  notify: restart klipper
+    dest: "{{ install_dir }}/printer_data_{{ printer.name }}/config/macros.cfg"
+  register: cfg_macros
 
-- name: Copy mainsail.cfg for printer
+- name: Copy mainsail.cfg for {{ printer.name }}
   template:
     src: mainsail.cfg.j2
-    dest: "{{ install_dir }}/printer_data_{{ item.name }}/config/mainsail.cfg"
-  loop: "{{ printers }}"
-  notify: restart klipper
+    dest: "{{ install_dir }}/printer_data_{{ printer.name }}/config/mainsail.cfg"
+  register: cfg_mainsail
 
-- name: Copy model.cfg for printer
+- name: Copy model.cfg for {{ printer.name }}
   template:
-    src: "{{ item.model }}.cfg.j2"
-    dest: "{{ install_dir }}/printer_data_{{ item.name }}/config/{{ item.model }}.cfg"
-  loop: "{{ printers }}"
-  notify: restart klipper
-  tags: ['klipper_cfg_printer']
+    src: "{{ printer.model }}.cfg.j2"
+    dest: "{{ install_dir }}/printer_data_{{ printer.name }}/config/{{ printer.model }}.cfg"
+  register: cfg_model
 
-- name: Copy name.cfg for printer
+- name: Copy name.cfg for {{ printer.name }}
   template:
-    src: "{{ item.name }}.cfg.j2"
-    dest: "{{ install_dir }}/printer_data_{{ item.name }}/config/{{ item.name }}.cfg"
-  loop: "{{ printers }}"
-  notify: restart klipper
-  tags: ['klipper_cfg_printer']
+    src: "{{ printer.name }}.cfg.j2"
+    dest: "{{ install_dir }}/printer_data_{{ printer.name }}/config/{{ printer.name }}.cfg"
+  register: cfg_name
 
-- name: Create printer.cfg
+- name: Create printer.cfg for {{ printer.name }}
   copy:
     backup: yes
-    dest: "{{ install_dir }}/printer_data_{{ item.name }}/config/printer.cfg"
+    dest: "{{ install_dir }}/printer_data_{{ printer.name }}/config/printer.cfg"
     content: |
       [include mainsail.cfg]
       [include macros.cfg]
 
-      [include {{ item.model }}.cfg]
-      [include {{ item.name }}.cfg]
+      [include {{ printer.model }}.cfg]
+      [include {{ printer.name }}.cfg]
 
       [mcu]
-      serial: /dev/{{ item.name }}
+      serial: /dev/{{ printer.name }}
 
       ##########################################
       # WARNING
       # Here lies klipper's SAVE_CONFIG
-      # You *MUST* move the config overwrites in {{ item.model }}.cfg in git
+      # You *MUST* move the config overwrites in {{ printer.model }}.cfg in git
       ##########################################
-  loop_control:
-    index_var: i
-  loop: "{{ printers }}"
-  notify: restart klipper
+  register: cfg_printer
+
+- name: Restart klipper for {{ printer.name }}
+  become: true
+  systemd:
+    name: "klipper@{{ printer.name }}"
+    state: restarted
+  when: >
+    cfg_macros.changed or
+    cfg_mainsail.changed or
+    cfg_model.changed or
+    cfg_name.changed or
+    cfg_printer.changed

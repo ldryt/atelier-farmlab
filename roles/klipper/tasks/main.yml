@@ -1,5 +1,55 @@
 ---
-- import_tasks: config.yml
-  tags: ['klipper_cfg']
+- name: Fetch klipper git repository
+  git:
+    repo: "{{ klipper_repo }}"
+    dest: "{{ install_dir }}/klipper"
+    version: "{{ klipper_version }}"
 
-- import_tasks: setup.yml
+- name: Create klipper python venv
+  pip:
+    requirements: "{{ install_dir }}/klipper/scripts/klippy-requirements.txt"
+    virtualenv: "{{ install_dir }}/klippy-env"
+    virtualenv_command: python3 -m venv
+
+- name: Create directory for each klipper instance
+  file:
+    path: "{{ install_dir }}/printer_data_{{ item.0.name }}/{{ item.1 }}"
+    state: directory
+    mode: 0755
+  loop: "{{ printers | product(['config', 'logs', 'comms', 'gcodes']) | list }}"
+
+- name: Configure klipper instances
+  include_tasks:
+    file: ./config.yml
+    apply:
+      tags:
+        - klipper_cfg
+  loop: "{{ printers }}"
+  loop_control:
+    loop_var: printer
+  tags:
+    - 'klipper_cfg'
+
+- name: Create udev rules for printer
+  become: true
+  template:
+    src: udev-printer.rules.j2
+    dest: "/etc/udev/rules.d/99-printer-{{ item.name }}.rules"
+  loop: "{{ printers }}"
+  notify: reload udev
+
+- name: Copy systemd klipper service template
+  become: true
+  template:
+    src: klipper@.service.j2
+    dest: /etc/systemd/system/klipper@.service
+    mode: 0644
+  notify: reload systemd
+
+- name: Enable and start klipper service for printer
+  become: true
+  systemd:
+    name: "klipper@{{ item.name }}"
+    enabled: yes
+    state: started
+  loop: "{{ printers }}"
