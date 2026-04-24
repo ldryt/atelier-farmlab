@@ -36,17 +36,9 @@
   notify: restart klipper
   tags: ['klipper_cfg_printer']
 
-- name: Extract SAVE_CONFIG block from printer.cfg
-  shell: |
-    F="{{ install_dir }}/printer_data_{{ item.name }}/config/printer.cfg"
-    [ -f "$F" ] && exit
-    awk '/#\*# <---------------------- SAVE_CONFIG ---------------------->/{flag=1} flag' "$F"
-  register: SC
-  loop: "{{ printers }}"
-  changed_when: false
-
 - name: Create printer.cfg
   copy:
+    backup: yes
     dest: "{{ install_dir }}/printer_data_{{ item.name }}/config/printer.cfg"
     content: |
       [include mainsail.cfg]
@@ -61,9 +53,8 @@
       ##########################################
       # WARNING
       # Here lies klipper's SAVE_CONFIG
-      # You *SHOULD* remove them and place the config overwrites in {{ item.model }}.cfg in git
+      # You *MUST* move the config overwrites in {{ item.model }}.cfg in git
       ##########################################
-      {{ SC.results[i].stdout }}
   loop_control:
     index_var: i
   loop: "{{ printers }}"
