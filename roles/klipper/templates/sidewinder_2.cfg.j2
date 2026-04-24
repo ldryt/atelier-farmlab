@@ -1,5 +1,24 @@
 [extruder]
 control = pid
-pid_Kp=19.269
-pid_Ki=1.179
-pid_Kd=78.761
+pid_Kp=17.834
+pid_Ki=0.683
+pid_Kd=116.368
+
+[bed_mesh default]
+version = 1
+points =
+	  0.062500, 0.010000, 0.045000
+	  0.010000, -0.030000, 0.005000
+	  -0.030000, -0.065000, -0.015000
+	  -0.025000, -0.065000, -0.005000
+	  0.095000, 0.040000, 0.075000
+x_count = 3
+y_count = 5
+mesh_x_pps = 2
+mesh_y_pps = 2
+algo = bicubic
+tension = 0.2
+min_x = 30.0
+max_x = 270.0
+min_y = 30.0
+max_y = 270.0
