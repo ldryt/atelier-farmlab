@@ -148,6 +148,10 @@ gcode:
     G90
     # Home the printer
     G28
+
+    # Load the default bed mesh
+    BED_MESH_PROFILE LOAD=default
+
     # Move the nozzle near the bed
     G1 Z10 F3000
     # Wait for bed to reach temperature
@@ -156,6 +160,11 @@ gcode:
     G4 S600
     # Set and wait for nozzle to reach temperature
     M109 S{EXTRUDER_TEMP}
+
+
+[gcode_macro START_PRINT]
+gcode:
+    PRINT_START {rawparams}
 
 [gcode_macro PRINT_END]
 #   Use PRINT_END for the slicer ending script - please customize for your slicer of choice
@@ -199,6 +208,10 @@ gcode:
     M107                          ; turn off fan
     G90                           ; absolute positioning
     G0 X60 Y{max_y-5} F3600       ; park nozzle at rear
+
+[gcode_macro END_PRINT]
+gcode:
+    PRINT_END {rawparams}
 
 [gcode_macro LOAD_FILAMENT]
 gcode:
