@@ -1,7 +1,10 @@
+ffmpeg:
+  hw: "-vf format=yuv420p -c:v h264_v4l2m2m"
+
 streams:
 {% for printer in printers %}
 {% if printer.camera is defined %}
-  {{ printer.name }}: "ffmpeg:device?video={{ printer.camera }}&input_format=mjpeg#video=h264"
+  {{ printer.name }}: "ffmpeg:{{ printer.camera }}#video=hw"
 {% endif %}
 {% endfor %}
 
