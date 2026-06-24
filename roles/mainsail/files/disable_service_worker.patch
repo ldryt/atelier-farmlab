@@ -1,0 +1,12 @@
+diff --git a/vite.config.ts b/vite.config.ts
+index 1c2b396c..042530c3 100644
+--- a/vite.config.ts
++++ b/vite.config.ts
+@@ -15,6 +15,7 @@ import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
+ 
+ const PWAConfig: Partial<VitePWAOptions> = {
+     registerType: 'autoUpdate',
++    selfDestroying: true,
+     includeAssets: ['fonts/**/*.woff2', 'img/**/*.svg', 'img/**/*.png'],
+     manifest: {
+         name: 'Mainsail',
