@@ -17,6 +17,7 @@ all:
     mainsail_repo: "https://github.com/mainsail-crew/mainsail"
     mainsail_version: "v2.17.0"
     mainsail_www_dir: "/var/www/mainsail"
+    mainsail_local_build_dir: "./mainsail-build"
 
     go2rtc_version: "v1.9.14"
     stun_server: "stuns:ice.ldryt.dev:5349"

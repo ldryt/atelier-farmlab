@@ -1,25 +1,36 @@
 ---
-# - name: Clone mainsail repository
-#   git:
-#     repo: "{{ mainsail_repo }}"
-#     dest: "{{ install_dir }}/mainsail"
-#     version: "{{ mainsail_version }}"
-#     force: yes
+- name: Build Mainsail on ***THIS*** host
+  delegate_to: localhost
+  block:
+    - name: Clone mainsail repository
+      git:
+        repo: "{{ mainsail_repo }}"
+        dest: "{{ mainsail_local_build_dir }}"
+        version: "{{ mainsail_version }}"
+        force: yes
 
-# - name: Apply patch hostname
-#   patch:
-#     src: hostname.patch
-#     basedir: "{{ install_dir }}/mainsail"
-#     strip: 1
+    - name: Apply patch hostname
+      patch:
+        src: "{{ item }}"
+        basedir: "{{ mainsail_local_build_dir }}"
+        strip: 1
+      loop:
+        - disable_service_worker.patch
+        - multiple_hostnames.patch
 
-# - name: Install npm dependencies
-#   npm:
-#     path: "{{ install_dir }}/mainsail"
+    - name: Install npm dependencies
+      npm:
+        path: "{{ mainsail_local_build_dir }}"
 
-# - name: Build mainsail
-#   command: npm run build
-#   args:
-#     chdir: "{{ install_dir }}/mainsail"
+    - name: Prepare mainsail dependencies
+      command: npm ci
+      args:
+        chdir: "{{ mainsail_local_build_dir }}"
+
+    - name: Build mainsail
+      command: npm run build
+      args:
+        chdir: "{{ mainsail_local_build_dir }}"
 
 - name: Create mainsail www folder
   become: true
@@ -29,16 +40,11 @@
     owner: "{{ system_user }}"
     group: www-data
 
-# - name: Copy mainsail files to www dir
-#   copy:
-#     remote_src: yes
-#     src: "{{ install_dir }}/mainsail/dist/"
-#     dest: "{{ mainsail_www_dir }}"
-
 - name: Copy mainsail files to www dir
   unarchive:
-    src: "mainsail.zip"
+    src: "{{ mainsail_local_build_dir }}/dist/mainsail.zip"
     dest: "{{ mainsail_www_dir }}"
+  notify: restart nginx
 
 - name: Copy Mainsail config.json
   template:
