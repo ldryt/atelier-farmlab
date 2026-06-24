@@ -13,3 +13,6 @@
 
     - role: mainsail
       tags: ['mainsail']
+
+    - role: go2rtc
+      tags: ['go2rtc']

@@ -18,6 +18,12 @@ all:
     mainsail_version: "v2.17.0"
     mainsail_www_dir: "/var/www/mainsail"
 
+    go2rtc_version: "v1.9.14"
+    stun_server: "stuns:ice.ldryt.dev:5349"
+    turn_server: "turns:ice.ldryt.dev:5349"
+    turn_user: "farmlab_atelier_epita"
+    turn_password_file: "{{ install_dir }}/ice.ldryt.dev.txt"
+
   hosts:
     farmlab:
       ansible_host: farmlab
@@ -27,6 +33,7 @@ all:
           usb_port: 1-1.2.4.4
           moonraker:
             port: 7125
+          camera: "/dev/video0"
         - name: sidewinder_2
           model: artillery_sidewinder_x1
           usb_port: 1-1.2.4.3

@@ -1,0 +1,16 @@
+streams:
+{% for printer in printers %}
+{% if printer.camera is defined %}
+  {{ printer.name }}: "ffmpeg:device?video={{ printer.camera }}&input_format=mjpeg#video=h264"
+{% endif %}
+{% endfor %}
+
+webrtc:
+  ice_servers:
+    - urls: ["{{ stun_server }}"]
+    - urls: ["{{ turn_server }}"]
+      username: "{{ turn_user }}"
+      credential: "{{ turn_secret['content'] | b64decode | trim }}"
+
+api:
+  listen: "127.0.0.1:1984"

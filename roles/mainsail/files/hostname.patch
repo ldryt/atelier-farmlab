@@ -1,3 +1,19 @@
+diff --git a/src/components/webcams/streamers/WebrtcGo2rtc.vue b/src/components/webcams/streamers/WebrtcGo2rtc.vue
+index bb27a58e..631b9b2a 100644
+--- a/src/components/webcams/streamers/WebrtcGo2rtc.vue
++++ b/src/components/webcams/streamers/WebrtcGo2rtc.vue
+@@ -69,8 +69,9 @@ export default class WebrtcGo2rtc extends Mixins(BaseMixin, WebcamMixin) {
+         let url = new URL(location.href)
+ 
+         try {
+-            urlSearch = new URL(this.camSettings.stream_url).search.toString()
+-            url = new URL('api/ws' + urlSearch, this.camSettings.stream_url)
++            const base = new URL(this.camSettings.stream_url, location.origin)
++            urlSearch = base.search.toString()
++            url = new URL('api/ws' + urlSearch, base)
+         } catch (e) {
+             this.log('invalid url', this.camSettings.stream_url)
+         }
 diff --git a/src/store/actions.ts b/src/store/actions.ts
 index 05ddc62d..49bd68f2 100644
 --- a/src/store/actions.ts

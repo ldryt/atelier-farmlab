@@ -1,0 +1,7 @@
+---
+- name: restart go2rtc
+  become: true
+  systemd:
+    name: go2rtc
+    state: restarted
+    daemon_reload: yes

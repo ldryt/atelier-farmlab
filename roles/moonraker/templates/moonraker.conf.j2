@@ -27,3 +27,12 @@ trusted_clients:
 
 [machine]
 provider: systemd_cli
+
+{% if item.camera is defined %}
+[webcam {{ item.name }}]
+location: printer
+enabled: True
+service: webrtc-go2rtc
+stream_url: /webcam/stream.html?src={{ item.name }}
+snapshot_url: /webcam/api/frame.jpeg?src={{ item.name }}
+{% endif %}

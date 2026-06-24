@@ -1,0 +1,13 @@
+[Unit]
+Description=go2rtc
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/go2rtc -config /etc/go2rtc/go2rtc.yaml
+WorkingDirectory=/etc/go2rtc
+Restart=always
+RestartSec=5
+User=root
+
+[Install]
+WantedBy=multi-user.target

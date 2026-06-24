@@ -1,0 +1,42 @@
+---
+- name: Download go2rtc
+  get_url:
+    url: "https://github.com/AlexxIT/go2rtc/releases/download/{{ go2rtc_version }}/go2rtc_linux_arm64"
+    dest: "/usr/local/bin/go2rtc"
+    mode: '0755'
+  become: true
+
+- name: Ensure go2rtc dir exists
+  file:
+    path: "/etc/go2rtc"
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: Fetch turn secret
+  slurp:
+    src: "{{ turn_password_file }}"
+  register: turn_secret
+
+- name: Copy go2rtc config
+  template:
+    src: "go2rtc.yaml.j2"
+    dest: "/etc/go2rtc/go2rtc.yaml"
+    mode: '0644'
+  become: true
+  notify: restart go2rtc
+
+- name: Copy go2rtc systemd service file
+  template:
+    src: "go2rtc.service.j2"
+    dest: "/etc/systemd/system/go2rtc.service"
+  become: true
+  notify: restart go2rtc
+
+- name: Enable and start go2rtc
+  systemd:
+    name: go2rtc
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  become: true
