@@ -31,22 +31,28 @@ all:
       printers:
         - name: sidewinder_1
           model: artillery_sidewinder_x1
-          usb_port: 1-1.2.4.4
+          usb:
+            mcu: 1-1.2.4.4
+            camera: 1-1.2.3
           moonraker:
             port: 7125
-          camera: "/dev/video0"
         - name: sidewinder_2
           model: artillery_sidewinder_x1
-          usb_port: 1-1.2.4.3
+          usb:
+            mcu: 1-1.2.4.3
+            camera: 1-1.2.2
           moonraker:
             port: 7126
         - name: sidewinder_3
           model: artillery_sidewinder_x1
-          usb_port: 1-1.2.4.2
+          usb:
+            mcu: 1-1.2.4.2
+            camera: 1-1.2.1
           moonraker:
             port: 7127
         - name: duplicator_1
           model: wanhao_duplicator_12_300
-          usb_port: 1-1.2.4.1
+          usb:
+            mcu: 1-1.2.4.1
           moonraker:
             port: 7128

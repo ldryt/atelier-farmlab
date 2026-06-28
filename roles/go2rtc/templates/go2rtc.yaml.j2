@@ -3,8 +3,8 @@ ffmpeg:
 
 streams:
 {% for printer in printers %}
-{% if printer.camera is defined %}
-  {{ printer.name }}: "ffmpeg:{{ printer.camera }}#video=hw"
+{% if printer.usb.camera is defined %}
+  {{ printer.name }}: "ffmpeg:/dev/video_{{ printer.name }}#video=hw"
 {% endif %}
 {% endfor %}
 

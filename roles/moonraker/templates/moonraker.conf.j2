@@ -28,7 +28,7 @@ trusted_clients:
 [machine]
 provider: systemd_cli
 
-{% if item.camera is defined %}
+{% if item.usb.camera is defined %}
 [webcam {{ item.name }}]
 location: printer
 enabled: True
