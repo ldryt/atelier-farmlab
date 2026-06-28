@@ -39,16 +39,15 @@ dir_pin: !ar48
 enable_pin: !ar62
 microsteps: 16
 rotation_distance: 8
-endstop_pin: ^!ar18
-position_endstop: 0
+endstop_pin: probe:z_virtual_endstop
 position_min: -3
 position_max: 400
-homing_speed: 20
+homing_speed: 10
 second_homing_speed: 2
 
 [safe_z_home]
-home_xy_position: 10,10
-z_hop: 5
+home_xy_position: 155,155
+z_hop: 15
 
 [stepper_z1]
 step_pin: ar36
@@ -119,34 +118,15 @@ fade_start: 1.0
 fade_end: 10.0
 algorithm: bicubic
 
-[led extruder_led]
-red_pin: ar5
-green_pin: ar4
-blue_pin: ar6
-initial_RED: 0.0
-initial_GREEN: 0.0
-initial_BLUE: 0.0
-
-[gcode_macro STATUS_PAUSED]
-gcode:
-    SET_LED LED=extruder_led RED=1.0 GREEN=0.1 BLUE=0.0
-
-[gcode_macro STATUS_PRINTING]
-gcode:
-    SET_LED LED=extruder_led RED=1.0 GREEN=1.0 BLUE=1.0
-
-[gcode_macro STATUS_CANCELLED]
-gcode:
-    SET_LED LED=extruder_led RED=1.0 GREEN=0.0 BLUE=0.0
-
-[gcode_macro STATUS_READY]
-gcode:
-    SET_LED LED=extruder_led RED=0.0 GREEN=1.0 BLUE=0.0
-
-[delayed_gcode set_ready_led]
-initial_duration: 1.0
-gcode:
-    STATUS_READY
+[bltouch]
+control_pin: ar11
+x_offset: 28
+y_offset: -33
+samples: 3
+sample_retract_dist: 2.5
+samples_result: median
+samples_tolerance: 0.03
+samples_tolerance_retries: 10
 
 [filament_switch_sensor runout]
 pause_on_runout: False
@@ -155,9 +135,6 @@ switch_pin: ar2
 
 [gcode_macro _CLIENT_VARIABLE]
 variable_runout_sensor: "filament_switch_sensor runout"
-variable_user_pause_macro: "STATUS_PAUSED"
-variable_user_resume_macro: "STATUS_PRINTING"
-variable_user_cancel_macro: "STATUS_CANCELLED"
 gcode:
 
 # Arduino aliases for atmega2560/1280 (Arduino mega) boards
