@@ -135,6 +135,27 @@ gcode:
     RESTORE_GCODE_STATE NAME=TEST_SPEED
 {% endraw %}
 
+[gcode_macro BED_MESH_CALIBRATE]
+rename_existing: _BED_MESH_CALIBRATE_ORIG
+gcode:
+    _BED_MESH_CALIBRATE_ORIG {rawparams}
+    SAVE_VARIABLE VARIABLE=bed_mesh_time VALUE={printer.toolhead.estimated_print_time}
+
+[gcode_macro _SMART_BED_MESH]
+gcode:
+    {% raw %}
+    {% set max_age = 7200 %}
+    {% set now = printer.toolhead.estimated_print_time | float %}
+    {% set last = printer.save_variables.variables.bed_mesh_time | default(0) | float %}
+    {% set age = now - last %}
+    {% if last > 0 and age >= 0 and age < max_age %}
+        { action_respond_info("Bed mesh %d min old. Fuck calibration" % (age / 60)) }
+    {% else %}
+        BED_MESH_CLEAR
+        BED_MESH_CALIBRATE
+    {% endif %}
+    {% endraw %}
+
 [gcode_macro PRINT_START]
 gcode:
     {% raw %}
@@ -143,7 +164,7 @@ gcode:
     {% endraw %}
 
     M140 S{BED_TEMP}
-    M104 S150          
+    M104 S137
     G90                ; Use absolute coordinates
     G28                ; Home all axes
 
@@ -151,8 +172,7 @@ gcode:
     M190 S{BED_TEMP}   
     G4 S60             ; 60-second heat soak
 
-    BED_MESH_CLEAR
-    BED_MESH_CALIBRATE 
+    _SMART_BED_MESH
 
     G1 X10 Y10 Z10 F3000
     M109 S{EXTRUDER_TEMP}

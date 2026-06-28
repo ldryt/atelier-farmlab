@@ -36,6 +36,9 @@
       [mcu]
       serial: /dev/{{ printer.name }}
 
+      [save_variables]
+      filename: ~/printer_data_{{ printer.name }}/config/variables.cfg
+
       ##########################################
       # WARNING
       # Here lies klipper's SAVE_CONFIG
