@@ -8,7 +8,7 @@ This Ansible configuration make use of the ssh config file to connect to the pi.
 Make sure this block is present in your `~/.ssh/config`
 ```
 Host farmlab
-    HostName farmlab.local
+    HostName 10.69.16.19
     User pi
     IdentityFile "~/.ssh/farmlab_ssh_key"
 ```
