@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oauth2-proxy
+  labels:
+    app: oauth2-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oauth2-proxy
+  template:
+    metadata:
+      labels:
+        app: oauth2-proxy
+    spec:
+      containers:
+      - name: oauth2-proxy
+        image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.2-alpine@sha256:8caf464e485b9cad9ff02aaed4a48e6aef358cc968065e1b1716e920c1ac5f5c
+        args:
+          - --provider=google
+          - --email-domain=lemaker.fr
+          - --upstream=http://mainsail:80
+          - --http-address=0.0.0.0:4180
+          - --proxy-websockets=true
+        env:
+          - name: OAUTH2_PROXY_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: oauth2-proxy-creds
+                key: OAUTH2_PROXY_CLIENT_ID
+          - name: OAUTH2_PROXY_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: oauth2-proxy-creds
+                key: OAUTH2_PROXY_CLIENT_SECRET
+          - name: OAUTH2_PROXY_COOKIE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: oauth2-proxy-creds
+                key: OAUTH2_PROXY_COOKIE_SECRET
+        ports:
+          - name: oauth2-proxy-http
+            containerPort: 4180
+            protocol: TCP

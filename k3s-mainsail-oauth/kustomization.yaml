@@ -1,0 +1,15 @@
+kind: Kustomization
+
+resources:
+  - ./mainsail/service.yaml
+  - ./oauth2-proxy/deployment.yaml
+  - ./oauth2-proxy/service.yaml
+  - ./ingress.yaml
+
+secretGenerator:
+  - name: oauth2-proxy-creds
+    literals:
+      - OAUTH2_PROXY_CLIENT_ID=TODO
+      - OAUTH2_PROXY_CLIENT_SECRET=TODO
+      - OAUTH2_PROXY_COOKIE_SECRET=TODO
+      # TODO: redirect: https://farmlab.lemaker.fr/oauth2/callback
